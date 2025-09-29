@@ -1,0 +1,147 @@
+services:
+  bff-service:
+    build: ./backend-facing-frontend
+    container_name: bff-service
+    ports:
+      - "7000:7000" # Exposed to frontend via HTTP
+    depends_on:
+      - broker
+      - mysql
+    networks:
+      - backend
+
+  core-engine:
+    build: ./core-engine
+    container_name: core-engine
+    expose:
+      - "7001"   # internal only
+    depends_on:
+      - broker
+      - mysql
+    networks:
+      - backend
+
+  orders:
+    build: ./orders-msc
+    container_name: orders
+    expose:
+      - "7004"
+    depends_on:
+      - broker
+      - mysql
+    networks:
+      - backend
+
+  # Products Service
+  products:
+    build: ./products-msc
+    container_name: products
+    expose:
+      - "7005"
+    depends_on:
+      - broker
+      - mysql
+    networks:
+      - backend
+
+  # Inventory Service
+  inventory:
+    build: ./inventory-msc
+    container_name: inventory
+    expose:
+      - "7003"
+    depends_on:
+      - broker
+      - mysql
+    networks:
+      - backend
+
+  # Logging Service
+  logging-srv:
+    build: ./logger-msc
+    container_name: logger
+    expose:
+      - "7002"
+    depends_on:
+      - broker
+      - mysql
+    networks:
+      - backend
+
+  # Kafka Broker (KRaft mode, no ZooKeeper)
+  broker:
+    image: apache/kafka:latest
+    hostname: broker
+    container_name: broker
+    ports:
+      - "9092:9092" # external access
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://broker:29092,CONTROLLER://broker:29093,PLAINTEXT_HOST://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@broker:29093
+      KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
+    networks:
+      - backend
+    volumes:
+      - kafka_data:/tmp/kraft-combined-logs
+
+  # MySQL Database
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: appdb
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: apppassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - backend
+
+  # MySQL Dashboard (Adminer - like pgAdmin but for MySQL)
+  adminer:
+    image: adminer:latest
+    container_name: adminer
+    depends_on:
+      - mysql
+    ports:
+      - "8081:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: mysql
+    networks:
+      - backend
+
+  # Kafka Dashboard (Provectus Kafka UI)
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    ports:
+      - "8082:8080" # Access via http://localhost:8082
+    depends_on:
+      - broker
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: broker:29092
+    networks:
+      - backend
+
+networks:
+  backend:
+
+volumes:
+  mysql_data:
+  kafka_data:
