@@ -3,10 +3,12 @@ services:
     build: ./backend-facing-frontend
     container_name: bff-service
     ports:
-      - "7000:7000" # Exposed to frontend via HTTP
+      - "7000:7000"
     depends_on:
       - broker
       - mysql
+    env_file:
+      - ./backend-facing-frontend/.env
     networks:
       - backend
 
@@ -14,10 +16,12 @@ services:
     build: ./core-engine
     container_name: core-engine
     expose:
-      - "7001"   # internal only
+      - "7001"
     depends_on:
       - broker
       - mysql
+    env_file:
+      - ./core-engine/.env
     networks:
       - backend
 
@@ -93,8 +97,6 @@ services:
       CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
     networks:
       - backend
-    volumes:
-      - kafka_data:/tmp/kraft-combined-logs
 
   # MySQL Database
   mysql:
@@ -130,7 +132,7 @@ services:
     image: provectuslabs/kafka-ui:latest
     container_name: kafka-ui
     ports:
-      - "8082:8080" # Access via http://localhost:8082
+      - "8082:8080"
     depends_on:
       - broker
     environment:
@@ -144,4 +146,3 @@ networks:
 
 volumes:
   mysql_data:
-  kafka_data:

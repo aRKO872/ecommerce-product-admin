@@ -18,6 +18,9 @@ build:
 build-service:
 	docker compose build $(SERVICE)
 
+rebuild-service:
+	docker compose rm -sf $(SERVICE) && docker rmi ecommerce-product-admin-$(SERVICE) && docker compose build $(SERVICE) && docker compose up -d $(SERVICE)
+
 restart:
 	docker compose down && docker compose up -d
 
