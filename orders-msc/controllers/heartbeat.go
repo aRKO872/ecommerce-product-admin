@@ -7,9 +7,6 @@ import (
 )
 
 func (c *Controller) Heartbeat(ctx context.Context, req *pb.GRPCRequest) (*pb.GRPCResponse, error) {
-	status, err := c.srv.Heartbeat()
-	if err != nil {
-		return nil, err
-	}
+	status := c.srv.Heartbeat()
 	return &pb.GRPCResponse{Body: []byte(status)}, nil
 }

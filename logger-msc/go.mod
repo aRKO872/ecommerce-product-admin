@@ -2,4 +2,13 @@ module github.com/aRKO872/ecommerce-product-admin/logger-msc
 
 go 1.24.4
 
-require github.com/aRKO872/ecommerce-product-admin-microservice-utils v0.0.0-20250926132911-e2b02f195ddd
+require github.com/aRKO872/ecommerce-product-admin-microservice-utils v0.0.0-20251004223855-c4a8639dad66
+
+require (
+	golang.org/x/net v0.41.0 // indirect
+	golang.org/x/sys v0.33.0 // indirect
+	golang.org/x/text v0.26.0 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20250707201910-8d1bb00bc6a7 // indirect
+	google.golang.org/grpc v1.75.1 // indirect
+	google.golang.org/protobuf v1.36.6 // indirect
+)

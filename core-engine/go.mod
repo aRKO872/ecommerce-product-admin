@@ -3,7 +3,7 @@ module github.com/aRKO872/ecommerce-product-admin/core-engine
 go 1.24.4
 
 require (
-	github.com/aRKO872/ecommerce-product-admin-microservice-utils v0.0.0-20251004212652-c7eb23272757
+	github.com/aRKO872/ecommerce-product-admin-microservice-utils v0.0.0-20251005112413-e6dee5073081
 	github.com/go-playground/validator/v10 v10.27.0
 	google.golang.org/grpc v1.75.1
 )
@@ -17,6 +17,7 @@ require (
 	github.com/leodido/go-urn v1.4.0 // indirect
 	golang.org/x/crypto v0.39.0 // indirect
 	golang.org/x/net v0.41.0 // indirect
+	golang.org/x/sync v0.17.0 // indirect
 	golang.org/x/sys v0.33.0 // indirect
 	golang.org/x/text v0.26.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250707201910-8d1bb00bc6a7 // indirect

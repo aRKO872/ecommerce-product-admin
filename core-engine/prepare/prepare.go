@@ -6,6 +6,7 @@ import (
 	pb "github.com/aRKO872/ecommerce-product-admin-microservice-utils/grpc/core-engine"
 	"github.com/aRKO872/ecommerce-product-admin-microservice-utils/routers"
 	"github.com/aRKO872/ecommerce-product-admin-microservice-utils/utils"
+	"github.com/aRKO872/ecommerce-product-admin/core-engine/client"
 	"github.com/aRKO872/ecommerce-product-admin/core-engine/controllers"
 	"github.com/aRKO872/ecommerce-product-admin/core-engine/models"
 	"github.com/aRKO872/ecommerce-product-admin/core-engine/services"
@@ -25,7 +26,14 @@ func Prepare() {
 		log.Fatal("env validation failed: ", err.Error())
 	}
 
-	srv := services.NewService()
+	grpcConfig := utils.NewGRPCConfig()
+	inventoryMscClient := grpcConfig.GetInventoryMscClient()
+	ordersMscClient := grpcConfig.GetOrdersMscClient()
+	productsMscClient := grpcConfig.GetProductsMscClient()
+
+	client := client.NewClient(inventoryMscClient, ordersMscClient, productsMscClient)
+	
+	srv := services.NewService(client)
 	r := controllers.NewController(srv)
 
 	sr := routers.ServiceRouter{

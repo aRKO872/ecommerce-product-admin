@@ -3,7 +3,7 @@ module github.com/aRKO872/ecommerce-product-admin/backend-facing-frontend
 go 1.24.4
 
 require (
-	github.com/aRKO872/ecommerce-product-admin-microservice-utils v0.0.0-20251004212652-c7eb23272757
+	github.com/aRKO872/ecommerce-product-admin-microservice-utils v0.0.0-20251004223855-c4a8639dad66
 	github.com/go-playground/validator/v10 v10.27.0
 )
 
