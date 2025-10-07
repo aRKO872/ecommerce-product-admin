@@ -1,0 +1,14 @@
+FROM golang:1.24-alpine
+WORKDIR /app
+
+RUN apk add --no-cache git
+
+# Install GoDoc
+RUN go install golang.org/x/tools/cmd/godoc@latest
+
+# Copy all source code
+COPY . .
+
+EXPOSE 6060
+
+CMD ["godoc", "-http=:6060"]
