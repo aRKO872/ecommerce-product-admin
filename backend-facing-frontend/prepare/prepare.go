@@ -1,3 +1,10 @@
+// Package prepare initializes and bundles together the core components
+// required for the Backend-Facing-Frontend (BFF) service.
+//
+// It is responsible for reading and validating environment config, setting up
+// gRPC connection to core-engine microservice, and preparing the HTTP
+// routing layer for incoming requests. This package serves as the entry point
+// for bootstrapping the BFF service runtime.
 package prepare
 
 import (
@@ -11,6 +18,26 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
+// Prepare initializes the Backend-Facing-Frontend (BFF) service.
+//
+// It performs the following steps:
+//   1. Parses environment variables.
+//   2. Validates the loaded config variables.
+//   3. Initializes the gRPC configuration and Core Engine client.
+//   4. Constructs the service and controller layers.
+//   5. Registers and serves all defined HTTP routes.
+//
+// The function logs fatal errors and terminates the application if any
+// initialization step fails.
+//
+// Dependencies:
+//   - utils: For environment parsing and gRPC configuration.
+//   - validator: For environment struct validation.
+//   - client: For gRPC client creation.
+//   - services: For business logic binding.
+//   - controllers: For route definition and HTTP server setup.
+//
+// On successful execution, the BFF service starts serving its defined routes.
 func Prepare() {
 	var config models.Config
 

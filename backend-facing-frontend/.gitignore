@@ -1,4 +1,5 @@
 .vscode/
 .env
+/backend-facing-frontend
 
 .DS_Store

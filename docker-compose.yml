@@ -1,6 +1,8 @@
 services:
   bff-service:
-    build: ./backend-facing-frontend
+    build: 
+      context: ./backend-facing-frontend
+      dockerfile: Dockerfile
     container_name: bff-service
     ports:
       - "7000:7000"
@@ -9,6 +11,18 @@ services:
       - mysql
     env_file:
       - ./backend-facing-frontend/.env
+    networks:
+      - backend
+
+  bff-godoc:
+    build: 
+      context: ./backend-facing-frontend
+      dockerfile: Dockerfile.godoc
+    container_name: bff-godoc
+    ports:
+      - "6060:6060"
+    volumes:
+      - ./backend-facing-frontend:/app
     networks:
       - backend
 

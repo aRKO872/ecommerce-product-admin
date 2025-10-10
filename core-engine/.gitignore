@@ -1,4 +1,5 @@
 .vscode/
 .env
+/core-engine
 
 .DS_Store
