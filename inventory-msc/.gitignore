@@ -1,4 +1,5 @@
 .vscode/
 .env
+/inventory-msc
 
 .DS_Store

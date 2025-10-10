@@ -1,4 +1,5 @@
 .vscode/
 .env
+/logger-msc
 
 .DS_Store

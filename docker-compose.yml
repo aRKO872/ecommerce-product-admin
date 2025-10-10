@@ -23,8 +23,6 @@ services:
       - "6060:6060"
     volumes:
       - ./backend-facing-frontend:/app
-    depends_on:
-      - bff-service
     networks:
       - backend
 

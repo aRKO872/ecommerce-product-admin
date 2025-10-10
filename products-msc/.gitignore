@@ -1,4 +1,5 @@
 .vscode/
 .env
+/products-msc
 
 .DS_Store
