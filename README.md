@@ -28,6 +28,12 @@ Before setting up the project, ensure you have the following installed:
   go build
 ```
 
+3. **Check and install Migration Tool - golang-migrate**: In the root directory, install golang-migrate
+```bash
+  brew install golang-migrate
+  migrate -version
+```
+
 3. **Setup environment variables**: cd into each service and run the following commands to create .env file for that particular service. You could put in your own configurations as you see fit.
 ```bash
   cp .env.example .env
@@ -53,6 +59,11 @@ Example `.env` file:
 - To bring down all containers (if currently running) :
 ```bash
   make down
+```
+
+- On running all containers for the first time, run the migration scripts manually, with :
+```bash
+  make migrate-up
 ```
 
 - To check logs for a certain service : 

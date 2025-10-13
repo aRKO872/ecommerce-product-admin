@@ -2,6 +2,12 @@
 
 # Default service
 SERVICE ?= bff-service
+MIGRATION_NAME ?= initialize_tables
+DB_USER ?= appuser
+DB_PASSWORD ?= apppassword
+DB_PORT ?= 3306
+DB_NAME ?= appdb
+DIRTY_VERSION ?= 0
 
 up:
 	docker compose up -d
@@ -38,3 +44,15 @@ ps-all:
 
 clean:
 	docker compose down --volumes --rmi all
+
+generate-new-migration:
+	migrate create -ext sql -dir ./migrations -seq $(MIGRATION_NAME)
+
+migrate-up:
+	migrate -path ./migrations -database "mysql://$(DB_USER):$(DB_PASSWORD)@tcp(localhost:$(DB_PORT))/$(DB_NAME)" up
+
+migrate-down:
+	migrate -path ./migrations -database "mysql://$(DB_USER):$(DB_PASSWORD)@tcp(localhost:$(DB_PORT))/$(DB_NAME)" down
+
+migrate-down-dirty:
+	migrate -path ./migrations -database "mysql://$(DB_USER):$(DB_PASSWORD)@tcp(localhost:$(DB_PORT))/$(DB_NAME)" force $(DIRTY_VERSION)
