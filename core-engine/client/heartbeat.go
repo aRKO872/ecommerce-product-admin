@@ -5,17 +5,21 @@ import (
 	"fmt"
 
 	pb "github.com/aRKO872/ecommerce-product-admin-microservice-utils/grpc/common"
+	"github.com/aRKO872/ecommerce-product-admin-microservice-utils/utils"
 	"golang.org/x/sync/errgroup"
 )
 
 
-func (c *clientImpl) Heartbeat() (string, error) {
+func (c *clientImpl) Heartbeat(ctx context.Context) (string, error) {
 	hg := new(errgroup.Group)
 	respChan := make(chan string, 3)
+	grpcReq := &pb.GRPCRequest{
+		Metadata: utils.GetGRPCMetadataWithContext(ctx),
+	}
 	hg.Go(func() error {
 		resp, err := c.inventoryMscClient.Heartbeat(
-			context.Background(), 
-			&pb.GRPCRequest{},
+			ctx, 
+			grpcReq,
 		)
 		if err != nil {
 			return err
@@ -27,8 +31,8 @@ func (c *clientImpl) Heartbeat() (string, error) {
 
 	hg.Go(func() error {
 		resp, err := c.productsMscCLient.Heartbeat(
-			context.Background(), 
-			&pb.GRPCRequest{},
+			ctx, 
+			grpcReq,
 		)
 		if err != nil {
 			return err
@@ -40,8 +44,8 @@ func (c *clientImpl) Heartbeat() (string, error) {
 
 	hg.Go(func() error {
 		resp, err := c.ordersMscClient.Heartbeat(
-			context.Background(), 
-			&pb.GRPCRequest{},
+			ctx, 
+			grpcReq,
 		)
 		if err != nil {
 			return err

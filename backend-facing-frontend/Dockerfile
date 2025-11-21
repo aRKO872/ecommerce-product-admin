@@ -1,15 +1,28 @@
 # Stage 1: Build
-FROM golang:1.24-alpine AS builder
+FROM golang:1.24-bullseye AS builder
+
+# Install C build tools and librdkafka headers
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+      build-essential pkg-config librdkafka-dev git ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+
+ENV CGO_ENABLED=1
 WORKDIR /app
 # Copy go.mod and go.sum first for caching
 COPY go.mod go.sum ./
 RUN go mod download
+RUN go mod tidy
 # Copy source
 COPY . .
 # Build binary
 RUN go build -o bff-service-binary .
 # Stage 2: Run
-FROM alpine:latest
+FROM debian:bullseye-slim
+# install librdkafka runtime and ca-certs
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends librdkafka1 ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
 WORKDIR /root/
 COPY --from=builder /app/bff-service-binary .
 EXPOSE 7000

@@ -1,10 +1,14 @@
 package services
 
-import "log"
+import (
+	"context"
 
-func (s *serviceImpl) Heartbeat() (string, error) {
-	log.Println("Heartbeat received")
-	resp, err := s.client.Heartbeat()
+	"github.com/aRKO872/ecommerce-product-admin-microservice-utils/literals"
+)
+
+func (s *serviceImpl) Heartbeat(ctx context.Context) (string, error) {
+	s.logger.Log(ctx, "Heartbeat received", literals.LogLevelInfo)
+	resp, err := s.client.Heartbeat(ctx)
 	if err != nil {
 		return "", err
 	}

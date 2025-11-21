@@ -8,6 +8,8 @@ DB_PASSWORD ?= apppassword
 DB_PORT ?= 3306
 DB_NAME ?= appdb
 DIRTY_VERSION ?= 0
+KAFKA_HOST_PORT ?= localhost:9092
+KAFKA_TOPIC_NAME ?= post-logs
 
 up:
 	docker compose up -d
@@ -56,3 +58,12 @@ migrate-down:
 
 migrate-down-dirty:
 	migrate -path ./migrations -database "mysql://$(DB_USER):$(DB_PASSWORD)@tcp(localhost:$(DB_PORT))/$(DB_NAME)" force $(DIRTY_VERSION)
+
+create-kafka-topic:
+	docker exec -it broker /opt/kafka/bin/kafka-topics.sh --create --topic $(KAFKA_TOPIC_NAME) --bootstrap-server $(KAFKA_HOST_PORT)
+
+list-kafka-topics:
+	docker exec -it broker /opt/kafka/bin/kafka-topics.sh --list --bootstrap-server $(KAFKA_HOST_PORT)
+
+delete-kafka-topic:
+	docker exec -it broker /opt/kafka/bin/kafka-topics.sh --delete --topic $(KAFKA_TOPIC_NAME) --bootstrap-server $(KAFKA_HOST_PORT)

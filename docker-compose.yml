@@ -81,7 +81,7 @@ services:
       - backend
 
   # Logging Service
-  logging-srv:
+  logger:
     build: ./logger-msc
     container_name: logger
     expose:
@@ -89,6 +89,8 @@ services:
     depends_on:
       - broker
       - mysql
+    env_file:
+      - ./logger-msc/.env
     networks:
       - backend
 
@@ -109,12 +111,14 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@broker:29093
-      KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
       CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
+    volumes:
+      - kafka_data:/var/lib/kafka/data
     networks:
       - backend
 
@@ -166,3 +170,4 @@ networks:
 
 volumes:
   mysql_data:
+  kafka_data:

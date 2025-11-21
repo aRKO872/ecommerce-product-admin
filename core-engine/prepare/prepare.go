@@ -26,18 +26,26 @@ func Prepare() {
 		log.Fatal("env validation failed: ", err.Error())
 	}
 
+	kafkaProducer, err := routers.NewKafkaProducer()
+	if err != nil {
+		log.Fatal("failed to create kafka producer: ", err.Error())
+	}
+
+	logger := routers.NewLogger(kafkaProducer, config.AppID)
 	grpcConfig := utils.NewGRPCConfig()
 	inventoryMscClient := grpcConfig.GetInventoryMscClient()
 	ordersMscClient := grpcConfig.GetOrdersMscClient()
 	productsMscClient := grpcConfig.GetProductsMscClient()
 
-	client := client.NewClient(inventoryMscClient, ordersMscClient, productsMscClient)
+	client := client.NewClient(logger, inventoryMscClient, ordersMscClient, productsMscClient)
 	
-	srv := services.NewService(client)
+	srv := services.NewService(logger, client, kafkaProducer)
 	r := controllers.NewController(srv)
 
 	sr := routers.ServiceRouter{
 		AppID:        config.AppID,
+		IsKafkaEnabled: true,
+		PubsubProducer: kafkaProducer,
 	}
 
 	sr.ServeGRPC(func(s *grpc.Server) {

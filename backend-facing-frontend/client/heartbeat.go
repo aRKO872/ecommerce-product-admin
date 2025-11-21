@@ -4,6 +4,8 @@ import (
 	"context"
 
 	pb "github.com/aRKO872/ecommerce-product-admin-microservice-utils/grpc/common"
+	"github.com/aRKO872/ecommerce-product-admin-microservice-utils/literals"
+	"github.com/aRKO872/ecommerce-product-admin-microservice-utils/utils"
 )
 
 // Heartbeat calls the Core Engine gRPC service's Heartbeat method and
@@ -18,8 +20,11 @@ import (
 //       log.Fatal("heartbeat failed:", err)
 //   }
 //   fmt.Println("Service status:", status)
-func (c *clientImpl) Heartbeat() (string, error) {
-	resp, err := c.coreEngineClient.Heartbeat(context.Background(), &pb.GRPCRequest{})
+func (c *clientImpl) Heartbeat(ctx context.Context) (string, error) {
+	c.logger.Log(ctx, "Invoking Core Engine Heartbeat via gRPC client", literals.LogLevelInfo)
+	resp, err := c.coreEngineClient.Heartbeat(ctx, &pb.GRPCRequest{
+		Metadata: utils.GetGRPCMetadataWithContext(ctx),
+	})
 	if err != nil {
 		return "", err
 	}
