@@ -25,7 +25,14 @@ func Prepare() {
 		log.Fatal("env validation failed: ", err.Error())
 	}
 
-	srv := services.NewService()
+	kafkaProducer, err := routers.NewKafkaProducer()
+	if err != nil {
+		log.Fatal("failed to create kafka producer: ", err.Error())
+	}
+
+	logger := routers.NewLogger(kafkaProducer, config.AppID)
+
+	srv := services.NewService(logger)
 	r := controllers.NewController(srv)
 
 	sr := routers.ServiceRouter{

@@ -1,13 +1,10 @@
 package controllers
 
 import (
-	"context"
 	"encoding/json"
 	"net/http"
 
-	"github.com/aRKO872/ecommerce-product-admin-microservice-utils/literals"
-	"github.com/aRKO872/ecommerce-product-admin/backend-facing-frontend/models"
-	"github.com/google/uuid"
+	"github.com/aRKO872/ecommerce-product-admin/logger-msc/models"
 )
 
 // Heartbeat handles HTTP requests to verify the health and availability of the service, and it's underlying gRPC services.
@@ -41,28 +38,9 @@ import (
 //   - rw: The HTTP response writer used to send the response.
 //   - r:  The HTTP request received from the client.
 func (c *Controller) Heartbeat(rw http.ResponseWriter, r *http.Request) {
-	var err error
-
-	ctx := r.Context()
-
-	correlationId := uuid.New().String()
-	ctx = context.WithValue(ctx, literals.ContextKeyCorrelationID, correlationId)
-
-	status, err := c.srv.Heartbeat(ctx)
-
-	if err != nil {
-		rw.WriteHeader(http.StatusInternalServerError)
-		errorResp := models.HeartbeatResponse{
-			Error: err.Error(),
-		}
-		errByteResp, _ := json.Marshal(errorResp)
-		rw.Write(errByteResp)
-		return
-	}
-
 	rw.WriteHeader(http.StatusOK)
 	errorResp := models.HeartbeatResponse{
-		Status: status,
+		Status: "OK",
 	}
 	byteResp, _ := json.Marshal(errorResp)
 	rw.Write(byteResp)

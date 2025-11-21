@@ -1,12 +1,21 @@
 package services
 
+import (
+	"context"
+
+	"github.com/aRKO872/ecommerce-product-admin-microservice-utils/routers"
+)
+
 type serviceImpl struct {
+	logger *routers.Logger
 }
 
-func NewService() Service {
-	return &serviceImpl{}
+func NewService(logger *routers.Logger) Service {
+	return &serviceImpl{
+		logger: logger,
+	}
 }
 
 type Service interface {
-	Heartbeat() (string)
+	Heartbeat(ctx context.Context) (string)
 }
